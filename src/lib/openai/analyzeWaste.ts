@@ -30,17 +30,28 @@ const wasteSchema = {
   additionalProperties: false
 };
 
-export async function analyzeWasteImage(imageBase64: string): Promise<WasteAnalysisResult> {
+export async function analyzeWasteImage(
+  imageBase64: string,
+  language: "uz" | "en" = "en"
+): Promise<WasteAnalysisResult> {
   // Ensure image has the data:image/jpeg;base64, prefix
   let formattedImage = imageBase64;
   if (!imageBase64.startsWith("data:")) {
     formattedImage = `data:image/jpeg;base64,${imageBase64}`;
   }
 
+  // Inject language instruction
+  const langInstruction =
+    language === "uz"
+      ? "MUHIM: Barcha javoblarni (item_name, category, material, decomposition_time, disposal_bin, not_to_do, environmental_impact, fun_fact, advice, summary) to'liq O'ZBEK TILIDA yozgin. JSON kalitlari o'zgarmasligi kerak."
+      : "IMPORTANT: Write all answers (item_name, category, material, decomposition_time, disposal_bin, not_to_do, environmental_impact, fun_fact, advice, summary) completely in ENGLISH. Keep JSON keys unchanged.";
+
+  const finalSystemPrompt = `${SYSTEM_PROMPT}\n\n${langInstruction}`;
+
   const response = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: finalSystemPrompt },
       {
         role: "user",
         content: [

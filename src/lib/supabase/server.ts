@@ -1,7 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { mockSupabaseClient } from "./mockClient";
 
 export async function createClient() {
+  if (process.env.NEXT_PUBLIC_MOCK_AUTH === "true") {
+    return mockSupabaseClient;
+  }
+
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -18,9 +23,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+            // Handled server components limitations
           }
         },
       },

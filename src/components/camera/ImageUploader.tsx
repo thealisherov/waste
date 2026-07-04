@@ -4,6 +4,7 @@ import { useState } from "react";
 import { UploadCloud, Image as ImageIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ImageUploaderProps {
   onUpload: (base64: string) => void;
@@ -13,10 +14,11 @@ interface ImageUploaderProps {
 export function ImageUploader({ onUpload, loading }: ImageUploaderProps) {
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const processFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
-      alert("Faqat rasm yuborish mumkin!");
+      alert(t("scan.failed") + ": image format required");
       return;
     }
 
@@ -63,7 +65,7 @@ export function ImageUploader({ onUpload, loading }: ImageUploaderProps) {
   };
 
   return (
-    <Card className="border-zinc-800 bg-zinc-950/70 backdrop-blur-xl shadow-2xl overflow-hidden p-6">
+    <Card className="border-zinc-800 bg-zinc-950/70 backdrop-blur-xl shadow-2xl overflow-hidden p-4 sm:p-6">
       {preview ? (
         <div className="relative aspect-[4/3] w-full bg-zinc-900 rounded-xl overflow-hidden group">
           <img
@@ -85,7 +87,7 @@ export function ImageUploader({ onUpload, loading }: ImageUploaderProps) {
           {loading && (
             <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
               <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-              <p className="text-sm text-emerald-400 font-medium">Analyzing with AI...</p>
+              <p className="text-xs sm:text-sm text-emerald-400 font-medium">{t("profile.loading")}</p>
             </div>
           )}
         </div>
@@ -103,21 +105,21 @@ export function ImageUploader({ onUpload, loading }: ImageUploaderProps) {
           }`}
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
-            <div className="p-3 bg-zinc-900 rounded-full border border-zinc-800 mb-4 group-hover:scale-110 transition-transform duration-300">
-              <UploadCloud className="w-8 h-8 text-zinc-400" />
+            <div className="p-3 bg-zinc-900 rounded-full border border-zinc-800 mb-3 group-hover:scale-110 transition-transform duration-300">
+              <UploadCloud className="w-6 h-6 sm:w-8 sm:h-8 text-zinc-400" />
             </div>
-            <p className="mb-2 text-sm text-zinc-200 font-semibold">
-              Drag & drop your waste image here
+            <p className="mb-1 text-xs sm:text-sm text-zinc-200 font-semibold leading-relaxed">
+              {t("scan.upload_file_title")}
             </p>
-            <p className="text-xs text-zinc-500 mb-4">
-              Supports PNG, JPG, JPEG, WEBP (Max 10MB)
+            <p className="text-[10px] sm:text-xs text-zinc-500 mb-3">
+              {t("scan.upload_file_sub")}
             </p>
             <Button
               variant="secondary"
               size="sm"
-              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 pointer-events-none"
+              className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 pointer-events-none text-[10px] sm:text-xs"
             >
-              Browse Files
+              {t("scan.browse_files")}
             </Button>
           </div>
           <input

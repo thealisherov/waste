@@ -2,12 +2,14 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useSaveScan } from "@/lib/queries/scans";
 import { WasteAnalysisResult } from "@/types/scan";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function useScanUpload() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<WasteAnalysisResult | null>(null);
   const saveScanMutation = useSaveScan();
+  const { language } = useLanguage();
 
   const uploadAndAnalyze = async (base64Data: string, userId: string) => {
     setLoading(true);
@@ -52,7 +54,7 @@ export function useScanUpload() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ imageBase64: rawBase64 }),
+        body: JSON.stringify({ imageBase64: rawBase64, language }),
       });
 
       if (!response.ok) {

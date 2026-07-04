@@ -4,10 +4,12 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Leaf, Sparkles } from "lucide-react";
+import { Leaf, Sparkles, Globe } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   const handleGoogleLogin = async () => {
     setLoading(true);
@@ -28,6 +30,30 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-zinc-950 px-4 overflow-hidden">
+      {/* Language Switcher in top corner */}
+      <div className="absolute top-4 right-4 z-30 flex items-center gap-1 bg-zinc-900/60 border border-zinc-800 rounded-full p-1">
+        <Button
+          onClick={() => setLanguage("uz")}
+          variant={language === "uz" ? "default" : "ghost"}
+          size="sm"
+          className={`h-7 px-3 text-[10px] font-bold rounded-full ${
+            language === "uz" ? "bg-emerald-500 hover:bg-emerald-600 text-white" : "text-zinc-400 hover:text-white"
+          }`}
+        >
+          UZB
+        </Button>
+        <Button
+          onClick={() => setLanguage("en")}
+          variant={language === "en" ? "default" : "ghost"}
+          size="sm"
+          className={`h-7 px-3 text-[10px] font-bold rounded-full ${
+            language === "en" ? "bg-emerald-500 hover:bg-emerald-600 text-white" : "text-zinc-400 hover:text-white"
+          }`}
+        >
+          ENG
+        </Button>
+      </div>
+
       {/* Decorative Blur Blobs */}
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
@@ -44,7 +70,7 @@ export default function LoginPage() {
             EcoWaste <span className="text-emerald-400">UZ</span>
           </CardTitle>
           <CardDescription className="text-zinc-400 mt-2 max-w-xs mx-auto text-sm">
-            AI-powered waste sorting assistant and reward system.
+            {t("login.description")}
           </CardDescription>
         </CardHeader>
 
@@ -53,7 +79,7 @@ export default function LoginPage() {
             <div className="bg-zinc-950/50 border border-zinc-800/80 rounded-xl p-4 flex gap-3">
               <Sparkles className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
               <p className="text-xs leading-relaxed text-zinc-300">
-                Sign in to analyze rubbish items using your device's camera, learn about decomposition rates, and boost your Eco Score.
+                {t("login.instructions")}
               </p>
             </div>
           </div>
@@ -85,11 +111,11 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            Sign in with Google
+            {t("login.google_button")}
           </Button>
 
           <p className="text-[10px] text-center text-zinc-500 max-w-[240px] mx-auto leading-relaxed">
-            By signing in, you agree to our terms of service and contribution guidelines.
+            {t("login.footer")}
           </p>
         </CardContent>
       </Card>

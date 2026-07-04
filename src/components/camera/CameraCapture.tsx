@@ -5,6 +5,7 @@ import { useRef, useState, useCallback } from "react";
 import { Camera, AlertCircle, RefreshCw, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface CameraCaptureProps {
   onCapture: (base64: string) => void;
@@ -15,6 +16,7 @@ export function CameraCapture({ onCapture, loading }: CameraCaptureProps) {
   const webcamRef = useRef<Webcam>(null);
   const [hasError, setHasError] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
+  const { t } = useLanguage();
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
@@ -65,18 +67,18 @@ export function CameraCapture({ onCapture, loading }: CameraCaptureProps) {
           />
           {/* Overlay grid for aiming */}
           <div className="absolute inset-0 border-[20px] border-black/30 pointer-events-none flex items-center justify-center">
-            <div className="w-48 h-48 border-2 border-dashed border-emerald-500/50 rounded-2xl animate-pulse"></div>
+            <div className="w-36 h-36 sm:w-48 sm:h-48 border-2 border-dashed border-emerald-500/50 rounded-2xl animate-pulse"></div>
           </div>
-          <div className="absolute top-3 left-3 bg-black/60 text-emerald-400 px-3 py-1 text-xs font-semibold rounded-full border border-emerald-500/30 backdrop-blur">
-            Live Waste Scanner
+          <div className="absolute top-3 left-3 bg-black/60 text-emerald-400 px-3 py-1 text-[10px] sm:text-xs font-semibold rounded-full border border-emerald-500/30 backdrop-blur">
+            {t("scan.camera_live_scanner")}
           </div>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center aspect-[4/3] w-full bg-zinc-900/40 p-6 text-center border-b border-zinc-800">
-          <AlertCircle className="h-12 w-12 text-amber-500 mb-4 animate-bounce" />
-          <h3 className="text-lg font-semibold text-zinc-200 mb-1">Camera Permission Required</h3>
-          <p className="text-sm text-zinc-400 max-w-xs mb-4">
-            Could not access camera. Try enabling browser permissions or use the upload button below.
+          <AlertCircle className="h-10 w-10 text-amber-500 mb-3 animate-bounce" />
+          <h3 className="text-base font-semibold text-zinc-200 mb-1">{t("scan.camera_error_title")}</h3>
+          <p className="text-xs text-zinc-400 max-w-xs mb-4 leading-relaxed">
+            {t("scan.camera_error_desc")}
           </p>
         </div>
       )}
@@ -97,10 +99,10 @@ export function CameraCapture({ onCapture, loading }: CameraCaptureProps) {
               <Button
                 onClick={capture}
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.3)] text-xs sm:text-sm py-5 rounded-xl"
               >
                 <Camera className="mr-2 h-4 w-4" />
-                {loading ? "Analyzing..." : "Scan Waste"}
+                {loading ? t("profile.loading") : t("scan.camera_take_photo")}
               </Button>
             </>
           )}
@@ -119,11 +121,11 @@ export function CameraCapture({ onCapture, loading }: CameraCaptureProps) {
           />
           <Button
             variant="outline"
-            className="w-full border-zinc-800 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-white border-dashed"
+            className="w-full border-zinc-800 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-white border-dashed rounded-xl py-5 text-xs sm:text-sm"
             disabled={loading}
           >
             <Upload className="mr-2 h-4 w-4" />
-            {hasError ? "Take Photo / Choose Image" : "Or upload image"}
+            {hasError ? t("scan.camera_take_photo") : t("scan.camera_or_upload")}
           </Button>
         </div>
       </div>

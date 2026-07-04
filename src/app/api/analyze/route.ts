@@ -13,12 +13,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { imageBase64 } = await req.json();
+    const { imageBase64, language } = await req.json();
     if (!imageBase64) {
       return NextResponse.json({ error: "Image data is required" }, { status: 400 });
     }
 
-    const result = await analyzeWasteImage(imageBase64);
+    const result = await analyzeWasteImage(imageBase64, language || "en");
     return NextResponse.json(result);
   } catch (err: any) {
     console.error("AI Analysis Error:", err);

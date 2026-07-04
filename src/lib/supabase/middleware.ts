@@ -6,6 +6,18 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  if (process.env.NEXT_PUBLIC_MOCK_AUTH === "true") {
+    const isAuthPage =
+      request.nextUrl.pathname.startsWith("/login") ||
+      request.nextUrl.pathname.startsWith("/callback");
+    if (isAuthPage) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

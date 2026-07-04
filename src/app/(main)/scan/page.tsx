@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, Image as ImageIcon, RotateCcw, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useLanguage } from "@/context/LanguageContext";
 
 function ScanContent() {
   const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ function ScanContent() {
   const [activeTab, setActiveTab] = useState<string>(initialMethod);
   const [userId, setUserId] = useState<string | null>(null);
   const [capturedImageBase64, setCapturedImageBase64] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const { uploadAndAnalyze, loading, error, result, setResult } = useScanUpload();
 
@@ -54,7 +56,7 @@ function ScanContent() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-center text-white">Analyzing Rubbish</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-center text-white">{t("scan.analyzing")}</h1>
         <ScanLoadingState />
       </div>
     );
@@ -64,18 +66,18 @@ function ScanContent() {
   if (result) {
     return (
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Analysis Result</h1>
-            <p className="text-zinc-400 text-xs">AI has completed categorizing the scanned waste item.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">{t("scan.result_title")}</h1>
+            <p className="text-zinc-400 text-xs">{t("scan.result_subtitle")}</p>
           </div>
           <Button
             onClick={resetScanner}
             variant="outline"
-            className="border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+            className="w-full sm:w-auto border-zinc-800 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white rounded-xl py-5"
           >
             <RotateCcw className="mr-2 h-4 w-4" />
-            Scan Another Item
+            {t("scan.scan_another")}
           </Button>
         </div>
         <ScanResultCard
@@ -87,19 +89,21 @@ function ScanContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-hidden">
       <div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">Eco Waste Scanner</h1>
-        <p className="text-zinc-400 text-sm">
-          Snap a photo of the trash item or upload an image to start the classification process.
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{t("scan.title")}</h1>
+        <p className="text-zinc-400 text-xs sm:text-sm mt-1">
+          {t("scan.subtitle")}
         </p>
       </div>
 
       {error && (
         <Alert variant="destructive" className="bg-red-950/20 border-red-900/30 text-red-300">
-          <AlertTriangle className="h-4.5 w-4.5" />
-          <AlertTitle>Scan Failed</AlertTitle>
-          <AlertDescription className="text-xs">{error}</AlertDescription>
+          <AlertTriangle className="h-4.5 w-4.5 shrink-0" />
+          <div>
+            <AlertTitle>{t("scan.failed")}</AlertTitle>
+            <AlertDescription className="text-xs mt-1">{error}</AlertDescription>
+          </div>
         </Alert>
       )}
 
@@ -110,14 +114,14 @@ function ScanContent() {
             className="rounded-lg text-xs font-semibold py-2.5 data-[state=active]:bg-zinc-800 data-[state=active]:text-white"
           >
             <Camera className="mr-2 h-4 w-4" />
-            Live Camera
+            {t("scan.live_camera")}
           </TabsTrigger>
           <TabsTrigger
             value="upload"
             className="rounded-lg text-xs font-semibold py-2.5 data-[state=active]:bg-zinc-800 data-[state=active]:text-white"
           >
             <ImageIcon className="mr-2 h-4 w-4" />
-            Upload File
+            {t("scan.upload_file")}
           </TabsTrigger>
         </TabsList>
 
@@ -134,12 +138,13 @@ function ScanContent() {
 }
 
 export default function ScanPage() {
+  const { t } = useLanguage();
   return (
     <Suspense
       fallback={
         <div className="flex flex-col items-center justify-center p-12 text-zinc-400">
           <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-sm">Loading Waste Scanner...</p>
+          <p className="text-sm">{t("scan.loading_scanner")}</p>
         </div>
       }
     >
